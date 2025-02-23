@@ -10,14 +10,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UrlsController extends Controller
 {
-    public function index(Request $request, Response $response, $args)
+    public function index(Request $request, Response $response, array $args)
     {
         $url = $this->urlRepository->getAllWithLatestChecks();
 
         return $this->view->render($response, 'urls.twig', ['urls' => $url]);
     }
 
-    public function store(Request $request, Response $response, $args)
+    public function store(Request $request, Response $response, array $args)
     {
         $url = $request->getParsedBody();
         $urlName = $url['url']['name'] ?? '';
@@ -44,7 +44,7 @@ class UrlsController extends Controller
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
-    public function show(Request $request, Response $response, $args)
+    public function show(Request $request, Response $response, array $args)
     {
         $id = $args['id'];
 
@@ -55,7 +55,7 @@ class UrlsController extends Controller
         return $this->view->render($response, 'check.twig', ['url' => $url, 'checks' => $urlCheck]);
     }
 
-    public function check(Request $request, Response $response, $args)
+    public function check(Request $request, Response $response, array $args)
     {
         $id = $args['id'];
 

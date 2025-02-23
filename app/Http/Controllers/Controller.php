@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use DI\Container;
+use Slim\Flash\Messages;
 use App\Repository\Connection;
 use App\Repository\UrlRepository;
+use Slim\Views\Twig;
 
 class Controller
 {
-    protected $view;
-    protected $flash;
+    protected Twig $view;
+    protected Messages $flash;
     protected UrlRepository $urlRepository;
 
     public function __construct(Container $container)
