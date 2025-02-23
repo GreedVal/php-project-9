@@ -29,18 +29,18 @@ class UrlRepository
         return $id !== false ? (int) $id : null;
     }
     
-    public function createOrGetId(string $name, string $createdAt): int
+    public function createOrGetId(string $name, string $createdAt): array
     {
         $id = $this->getIdByName($name);
         
         if ($id !== null) {
-            return $id;
+            return ['status' => true, 'id' => $id];
         }
     
         $stmt = $this->pdo->prepare('INSERT INTO urls (name, created_at) VALUES (:name, :created_at) RETURNING id');
         $stmt->execute(['name' => $name, 'created_at' => $createdAt]);
         
-        return (int) $stmt->fetchColumn();
+        return ['status' => false, 'id' => (int) $stmt->fetchColumn()];
     }
 
     public function createUrlCheck(array $data): int

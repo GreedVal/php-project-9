@@ -29,12 +29,19 @@ class UrlsController extends Controller
             return $this->view->render($response, 'home.twig', ['errors' => $errors]);
         }
 
-        $this->flash->addMessage('success', 'Сайт успешно добавлен!');
+        $data = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
 
-        $id = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
+
+        if($data['status']) {
+            $this->flash->addMessage('success', 'Страница уже существует');
+        } else {
+            $this->flash->addMessage('success', 'Сайт успешно добавлен');
+        }
+
+
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('url_show', ['id' => $id]);
+        $redirectUrl = $routeParser->urlFor('url_show', ['id' => $data['id']]);
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
