@@ -20,7 +20,7 @@ class UrlsController extends Controller
     public function store(Request $request, Response $response, array $args)
     {
         $url = $request->getParsedBody();
-        $urlName = $url['url']['name'] ?? '';
+        $urlName = isset($url['url']['name']) ? $url['url']['name'] : '';
 
         $errors = UrlValidator::validate($urlName);
 
@@ -63,7 +63,13 @@ class UrlsController extends Controller
 
         $url = $this->urlRepository->getRowById($id);
 
-        $check = $checkUrl->checkUrl($url['name'], $id);
+        if (isset($url['name'])) {
+            $check = $checkUrl->checkUrl($url['name'], $id);
+            $this->urlRepository->createUrlCheck($check);
+        } else {
+            $this->flash->addMessage('errors', 'Не верный id');
+            return $this->view->render($response->withStatus(422), 'home.twig');
+        }
 
         $this->urlRepository->createUrlCheck($check);
 

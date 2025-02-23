@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use Slim\App;
 use Slim\Views\Twig;
+use Psr\Container\ContainerInterface;
 
 class ErrorHandlerMiddleware
 {
