@@ -11,7 +11,7 @@ class Controller
     protected $view;
     protected $flash;
     protected UrlRepository $urlRepository;
-    
+
     public function __construct(Container $container)
     {
         $this->view = $container->get('view');

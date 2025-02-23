@@ -19,27 +19,27 @@ class UrlRepository
         $stmt->execute(['urlId' => $urlId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public function getIdByName(string $name): ?int
     {
         $stmt = $this->pdo->prepare('SELECT id FROM urls WHERE name = :name');
         $stmt->execute(['name' => $name]);
         $id = $stmt->fetchColumn();
-        
+
         return $id !== false ? (int) $id : null;
     }
-    
+
     public function createOrGetId(string $name, string $createdAt): array
     {
         $id = $this->getIdByName($name);
-        
+
         if ($id !== null) {
             return ['status' => true, 'id' => $id];
         }
-    
+
         $stmt = $this->pdo->prepare('INSERT INTO urls (name, created_at) VALUES (:name, :created_at) RETURNING id');
         $stmt->execute(['name' => $name, 'created_at' => $createdAt]);
-        
+
         return ['status' => false, 'id' => (int) $stmt->fetchColumn()];
     }
 
@@ -47,7 +47,7 @@ class UrlRepository
     {
         $stmt = $this->pdo->prepare('INSERT INTO url_checks (url_id, status_code, title, description, h1, created_at)
             VALUES(:url_id, :status, :title, :description, :h1, :time)');
-        
+
         $stmt->execute([
             'url_id' => $data['url_id'],
             'status' => $data['status_code'],
@@ -56,7 +56,7 @@ class UrlRepository
             'h1' => $data['h1'],
             'time' => $data['created_at']
         ]);
-        
+
         return (int) $this->pdo->lastInsertId();
     }
 

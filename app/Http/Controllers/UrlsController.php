@@ -10,7 +10,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UrlsController extends Controller
 {
-
     public function index(Request $request, Response $response, $args)
     {
         $url = $this->urlRepository->getAllWithLatestChecks();
@@ -32,7 +31,7 @@ class UrlsController extends Controller
         $data = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
 
 
-        if($data['status']) {
+        if ($data['status']) {
             $this->flash->addMessage('success', 'Страница уже существует');
         } else {
             $this->flash->addMessage('success', 'Страница успешно добавлена');
@@ -57,9 +56,9 @@ class UrlsController extends Controller
     }
 
     public function check(Request $request, Response $response, $args)
-    {   
+    {
         $id = $args['id'];
-        
+
         $checkUrl = new CheckUrlServices();
 
         $url = $this->urlRepository->getRowById($id);
@@ -67,7 +66,7 @@ class UrlsController extends Controller
         $check = $checkUrl->checkUrl($url['name'], $id);
 
         $this->urlRepository->createUrlCheck($check);
-        
+
         $this->flash->addMessage('success', 'Страница успешно проверена');
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();

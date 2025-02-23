@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UrlsController;
