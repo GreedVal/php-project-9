@@ -31,7 +31,7 @@ class CheckUrlServices
         } catch (ClientException $e) {
             return $this->handleException($e, $data, 'Доступ ограничен: проблема с IP');
         } catch (ConnectException $e) {
-            return $this->handleException($e, $data, 'Произошла ошибка при проверке - не удалось подключиться к серверу');
+            return $this->handleException($e, $data, 'Не удалось подключиться к серверу');
         } catch (TransferException $e) {
             return $this->handleException($e, $data, 'Упс, что-то пошло не так...');
         }
