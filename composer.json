@@ -1,10 +1,31 @@
 {
     "name": "hexlet/code",
+    "description": "My project",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
     "require": {
         "slim/slim": "^4.14",
         "slim/psr7": "^1.7",
-        "nyholm/psr7": "^1.8"
+        "nyholm/psr7": "^1.8",
+        "twig/twig": "^3.0",
+        "slim/twig-view": "^3.4",
+        "php-di/php-di": "^7.0",
+        "vlucas/phpdotenv": "^5.6",
+        "slim/flash": "^0.4.0",
+        "vlucas/valitron": "^1.4",
+        "guzzlehttp/guzzle": "^7.9",
+        "imangazaliev/didom": "^2.0"
     },
+    "authors": [
+        {
+            "name": "greedval"
+        }
+    ],
+    "license": "proprietary",
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.11"
     }
