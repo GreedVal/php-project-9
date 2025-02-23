@@ -6,14 +6,14 @@ use PDO;
 
 class UrlRepository
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function getCheckUrlByUrlId($urlId): array
+    public function getCheckUrlByUrlId(int $urlId): array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM url_checks WHERE url_id = :urlId ORDER BY id DESC');
         $stmt->execute(['urlId' => $urlId]);

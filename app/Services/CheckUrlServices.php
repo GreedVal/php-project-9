@@ -46,7 +46,7 @@ class CheckUrlServices
         return $data;
     }
 
-    private function handleException($e, array &$data, string $message): array
+    private function handleException(mixed $e, array &$data, string $message): array
     {
         $data['status_code'] = method_exists($e, 'getResponse') && $e->getResponse()
             ? $e->getResponse()->getStatusCode()
@@ -62,7 +62,7 @@ class CheckUrlServices
     private function extractText(Document $document, string $selector): ?string
     {
         $element = $document->first($selector);
-        return $element ? $element->text() : null;
+        return $element ? $element->textContent : null;
     }
 
     private function extractH1(Document $document): ?string
@@ -70,7 +70,7 @@ class CheckUrlServices
         $h1Element = $document->first('h1');
 
         if ($h1Element) {
-            $text = $h1Element->text();
+            $text = $h1Element->textContent;
             $validator = new Validator(['h1' => $text]);
             $validator->rule('lengthMax', 'h1', 255);
 
