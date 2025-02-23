@@ -35,7 +35,7 @@ class UrlsController extends Controller
         if($data['status']) {
             $this->flash->addMessage('success', 'Страница уже существует');
         } else {
-            $this->flash->addMessage('success', 'Сайт успешно добавлен');
+            $this->flash->addMessage('success', 'Страница успешно добавлена');
         }
 
 
