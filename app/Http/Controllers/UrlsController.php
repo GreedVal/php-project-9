@@ -26,7 +26,7 @@ class UrlsController extends Controller
         $errors = UrlValidator::validate($urlName);
 
         if (!empty($errors)) {
-            return $this->view->render($response, 'home.twig', ['errors' => $errors]);
+            return $this->view->render($response->withStatus(422), 'home.twig', ['errors' => $errors]);
         }
 
         $data = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
