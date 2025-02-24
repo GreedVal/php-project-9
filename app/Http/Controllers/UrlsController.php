@@ -19,7 +19,7 @@ class UrlsController extends Controller
 
     public function store(Request $request, Response $response, array $args)
     {
-        $url = $request->getParsedBody();
+        $url = (array) $request->getParsedBody();
         $urlName = $url['url']['name'] ?? '';
 
         $errors = UrlValidator::validate($urlName);

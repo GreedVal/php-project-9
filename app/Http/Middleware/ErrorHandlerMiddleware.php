@@ -11,9 +11,14 @@ use Psr\Container\ContainerInterface;
 
 class ErrorHandlerMiddleware
 {
+    /** @var App<ContainerInterface> */
     protected App $app;
     protected Twig $view;
 
+    /**
+     * @param App<ContainerInterface> $app
+     * @param Twig $view
+     */
     public function __construct(App $app, Twig $view)
     {
         $this->app = $app;

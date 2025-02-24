@@ -6,7 +6,7 @@ use Valitron\Validator;
 
 class UrlValidator
 {
-    public static function validate($urlName): array
+    public static function validate(string $urlName): array
     {
         $validator = new Validator(['url' => $urlName]);
         $validator->stopOnFirstFail();
