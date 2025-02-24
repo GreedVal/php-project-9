@@ -31,7 +31,7 @@ class CheckUrlServices
         } catch (ClientException $e) {
             return $this->handleException($e, $data, 'Доступ ограничен: проблема с IP');
         } catch (ConnectException $e) {
-            return $this->handleException($e, $data, 'Не удалось подключиться к серверу');
+            return $this->handleException($e, $data, 'Произошла ошибка при проверке - не удалось подключиться к серверу');
         } catch (TransferException $e) {
             return $this->handleException($e, $data, 'Упс, что-то пошло не так...');
         }
@@ -46,7 +46,7 @@ class CheckUrlServices
         return $data;
     }
 
-    private function handleException(mixed $e, array &$data, string $message): array
+    private function handleException($e, array &$data, string $message): array
     {
         $data['status_code'] = method_exists($e, 'getResponse') && $e->getResponse()
             ? $e->getResponse()->getStatusCode()
@@ -62,7 +62,7 @@ class CheckUrlServices
     private function extractText(Document $document, string $selector): ?string
     {
         $element = $document->first($selector);
-        return $element ? $element->textContent : null;
+        return $element ? $element->text() : null;
     }
 
     private function extractH1(Document $document): ?string
@@ -70,7 +70,7 @@ class CheckUrlServices
         $h1Element = $document->first('h1');
 
         if ($h1Element) {
-            $text = $h1Element->textContent;
+            $text = $h1Element->text();
             $validator = new Validator(['h1' => $text]);
             $validator->rule('lengthMax', 'h1', 255);
 
