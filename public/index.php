@@ -34,7 +34,7 @@ $container->get('view')->getEnvironment()->addGlobal('flash', $container->get('f
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
-$errorHandler = new ErrorHandlerMiddleware($app, $container->get('view'));
+$errorHandler = new ErrorHandlerMiddleware($container->get(Slim\App::class), $container->get('view'));
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 $app->get('/', [HomeController::class, 'index'])->setName('home');
