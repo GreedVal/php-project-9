@@ -7,7 +7,7 @@ use Slim\Factory\AppFactory;
 use Twig\Loader\FilesystemLoader;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UrlsController;
-use App\Http\Middleware\ErrorHandlerMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -34,8 +34,23 @@ $container->get('view')->getEnvironment()->addGlobal('flash', $container->get('f
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
-$errorHandler = new ErrorHandlerMiddleware($app, $container->get('view'));
-$errorMiddleware->setDefaultErrorHandler($errorHandler);
+$errorMiddleware->setDefaultErrorHandler(function (
+    ServerRequestInterface $request,
+    Throwable $exception,
+    bool $displayErrorDetails,
+    bool $logErrors,
+    bool $logErrorDetails
+) use ($container) {
+    $response = $container->get('responseFactory')->createResponse();
+
+    if ($exception->getCode() === 404) {
+        return $container->get('view')->render($response, "404.twig")
+            ->withStatus(404);
+    }
+
+    return $container->get('view')->render($response, "500.twig")
+        ->withStatus(500);
+});
 
 $app->get('/', [HomeController::class, 'index'])->setName('home');
 $app->get('/urls', [UrlsController::class, 'index'])->setName('urls');
