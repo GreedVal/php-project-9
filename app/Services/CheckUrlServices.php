@@ -6,8 +6,11 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Exception\RequestException;
 use DiDom\Document;
+use DiDom\Element;
 use Valitron\Validator;
+use Throwable;
 
 class CheckUrlServices
 {
@@ -28,12 +31,8 @@ class CheckUrlServices
         try {
             $res = $this->client->request('GET', $url, ['http_errors' => true]);
             $data['status_code'] = $res->getStatusCode();
-        } catch (ClientException $e) {
-            return $this->handleException($e, $data, 'Доступ ограничен: проблема с IP');
-        } catch (ConnectException $e) {
-            return $this->handleException($e, $data, 'Произошла ошибка при проверке - не удалось подключиться к серверу');
-        } catch (TransferException $e) {
-            return $this->handleException($e, $data, 'Упс, что-то пошло не так...');
+        } catch (ClientException | ConnectException | TransferException $e) {
+            return $this->handleException($e, $data, 'Ошибка при проверке URL');
         }
 
         $htmlFromUrl = (string) $res->getBody();
@@ -46,11 +45,13 @@ class CheckUrlServices
         return $data;
     }
 
-    private function handleException($e, array &$data, string $message): array
+    private function handleException(Throwable $e, array &$data, string $message): array
     {
-        $data['status_code'] = method_exists($e, 'getResponse') && $e->getResponse()
-            ? $e->getResponse()->getStatusCode()
-            : 500;
+        if ($e instanceof RequestException && $e->getResponse()) {
+            $data['status_code'] = $e->getResponse()->getStatusCode();
+        } else {
+            $data['status_code'] = 500;
+        }
 
         $data['title'] = $message;
         $data['h1'] = $message;
@@ -62,14 +63,14 @@ class CheckUrlServices
     private function extractText(Document $document, string $selector): ?string
     {
         $element = $document->first($selector);
-        return $element ? $element->text() : null;
+        return $element instanceof Element ? $element->text() : null;
     }
 
     private function extractH1(Document $document): ?string
     {
         $h1Element = $document->first('h1');
 
-        if ($h1Element) {
+        if ($h1Element instanceof Element) {
             $text = $h1Element->text();
             $validator = new Validator(['h1' => $text]);
             $validator->rule('lengthMax', 'h1', 255);
@@ -83,6 +84,6 @@ class CheckUrlServices
     private function extractAttribute(Document $document, string $selector, string $attribute): ?string
     {
         $element = $document->first($selector);
-        return $element ? $element->getAttribute($attribute) : null;
+        return $element instanceof Element ? $element->getAttribute($attribute) : null;
     }
 }
