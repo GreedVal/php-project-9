@@ -68,7 +68,7 @@ class UrlsController extends Controller
             $this->urlRepository->createUrlCheck($check);
         } else {
             $this->flash->addMessage('errors', 'Не верный id');
-            return $this->view->render($response->withStatus(422), 'home.twig');
+            return $this->view->render($response->withStatus(404), 'home.twig');
         }
 
         $this->urlRepository->createUrlCheck($check);

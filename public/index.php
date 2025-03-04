@@ -54,8 +54,8 @@ $errorMiddleware->setDefaultErrorHandler(function (
 
 $app->get('/', [HomeController::class, 'index'])->setName('home');
 $app->get('/urls', [UrlsController::class, 'index'])->setName('urls');
-$app->post('/urls', [UrlsController::class, 'store']);
-$app->get('/urls/{id}', [UrlsController::class, 'show'])->setName('url_show');
-$app->post('/urls/{id}', [UrlsController::class, 'check'])->setName('url_check');
+$app->post('/urls', [UrlsController::class, 'store'])->setName('urls.store');
+$app->get('/urls/{id}', [UrlsController::class, 'show'])->setName('urls.show');
+$app->post('/urls/{id}/checks', [UrlsController::class, 'check'])->setName('urls.checks.store');
 
 $app->run();
