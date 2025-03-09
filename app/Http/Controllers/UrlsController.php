@@ -71,8 +71,6 @@ class UrlsController extends Controller
             return $this->view->render($response->withStatus(404), 'urls/home.twig');
         }
 
-        $this->urlRepository->createUrlCheck($check);
-
         $this->flash->addMessage('success', 'Страница успешно проверена');
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
