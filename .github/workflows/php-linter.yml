@@ -1,0 +1,23 @@
+name: PHP Linter
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Install PHP CodeSniffer
+        run: |
+          composer global require "squizlabs/php_codesniffer=*"
+
+      - name: Run PHP Linter
+        run: phpcs --standard=PSR12 app/
