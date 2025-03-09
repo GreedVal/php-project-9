@@ -14,7 +14,7 @@ class UrlsController extends Controller
     {
         $url = $this->urlRepository->getAllWithLatestChecks();
 
-        return $this->view->render($response, 'urls.twig', ['urls' => $url]);
+        return $this->view->render($response, 'urls/urls.twig', ['urls' => $url]);
     }
 
     public function store(Request $request, Response $response, array $args)
@@ -25,7 +25,7 @@ class UrlsController extends Controller
         $errors = UrlValidator::validate($urlName);
 
         if (!empty($errors)) {
-            return $this->view->render($response->withStatus(422), 'home.twig', ['errors' => $errors]);
+            return $this->view->render($response->withStatus(422), 'urls/home.twig', ['errors' => $errors]);
         }
 
         $data = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
@@ -40,7 +40,7 @@ class UrlsController extends Controller
 
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('url_show', ['id' => $data['id']]);
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $data['id']]);
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
@@ -52,7 +52,7 @@ class UrlsController extends Controller
 
         $urlCheck = $this->urlRepository->getCheckUrlByUrlId($id);
 
-        return $this->view->render($response, 'check.twig', ['url' => $url, 'checks' => $urlCheck]);
+        return $this->view->render($response, 'urls/check.twig', ['url' => $url, 'checks' => $urlCheck]);
     }
 
     public function check(Request $request, Response $response, array $args)
@@ -68,7 +68,7 @@ class UrlsController extends Controller
             $this->urlRepository->createUrlCheck($check);
         } else {
             $this->flash->addMessage('errors', 'Не верный id');
-            return $this->view->render($response->withStatus(404), 'home.twig');
+            return $this->view->render($response->withStatus(404), 'urls/home.twig');
         }
 
         $this->urlRepository->createUrlCheck($check);
@@ -76,7 +76,7 @@ class UrlsController extends Controller
         $this->flash->addMessage('success', 'Страница успешно проверена');
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('url_show', ['id' => $id]);
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $id]);
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 }

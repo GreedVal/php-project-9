@@ -22,7 +22,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 $container->set('view', function () {
-    $loader = new FilesystemLoader(__DIR__ . '/../resources/views');
+    $loader = new FilesystemLoader(__DIR__ . '/../resources/views/');
     return new Twig($loader);
 });
 
@@ -44,11 +44,11 @@ $errorMiddleware->setDefaultErrorHandler(function (
     $response = $container->get('responseFactory')->createResponse();
 
     if ($exception->getCode() === 404) {
-        return $container->get('view')->render($response, "404.twig")
+        return $container->get('view')->render($response, "stubs/404.twig")
             ->withStatus(404);
     }
 
-    return $container->get('view')->render($response, "500.twig")
+    return $container->get('view')->render($response, "stubs/500.twig")
         ->withStatus(500);
 });
 
