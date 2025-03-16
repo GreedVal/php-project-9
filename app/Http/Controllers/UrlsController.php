@@ -41,9 +41,9 @@ class UrlsController extends Controller
         }
 
 
-        $idUrl = $this->urlRepository->getIdByName($urlName);
+        $id = $this->urlRepository->getIdByName($urlName);
 
-        if ($idUrl) {
+        if ($id) {
             $this->flash->addMessage('success', 'Страница уже существует');
         } else {
             $this->flash->addMessage('success', 'Страница успешно добавлена');
