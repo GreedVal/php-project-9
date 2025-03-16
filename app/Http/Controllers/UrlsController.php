@@ -81,7 +81,7 @@ class UrlsController extends Controller
             return $this->view->render($response->withStatus(404), 'urls/home.twig');
         }
 
-        if ($check['status_code'] == 500) {
+        if ($check['status_code'] == 500 || $check['status_code'] == 404) {
             $this->flash->addMessage('errors', 'Произошла ошибка при проверке, не удалось подключиться');
         } else {
             $this->urlRepository->createUrlCheck($check);

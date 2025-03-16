@@ -46,14 +46,14 @@
                 <tbody>
                     {% for check in checks %}
                     <tr>
-                        <td>{{ check.id }}</td>
-                        <td>{{ check.status_code }}</td>
-                        <td>{{ check.h1 }}</td>
-                        <td>{{ check.title }}</td>
-                        <td>{{ check.description }}</td>
-                        <td>{{ check.created_at }}</td>
+                        <td>{{ check.id|default:'' }}</td>
+                        <td>{{ check.status_code|default:'' }}</td>
+                        <td>{{ check.h1|default:'' }}</td>
+                        <td>{{ check.title|default:'' }}</td>
+                        <td>{{ check.description|default:'' }}</td>
+                        <td>{{ check.created_at|default:'' }}</td>
                     </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
         {% endif %}
