@@ -52,7 +52,6 @@ class CheckUrlServices
         } else {
             $data['status_code'] = 500;
         }
-        
         return $data;
     }
 
