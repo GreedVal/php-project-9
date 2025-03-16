@@ -53,7 +53,7 @@ class UrlsController extends Controller
 
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $idUrl]);
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => (string) $idUrl]);
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
