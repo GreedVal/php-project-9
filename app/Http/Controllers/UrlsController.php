@@ -47,7 +47,7 @@ class UrlsController extends Controller
             $this->flash->addMessage('success', 'Страница уже существует');
         } else {
             $this->flash->addMessage('success', 'Страница успешно добавлена');
-            $idUrl = $this->urlRepository->create($urlName, date('Y-m-d H:i:s'));
+            $idUrl = $this->urlRepository->create($urlName, (string) date('Y-m-d H:i:s'));
         }
 
 
