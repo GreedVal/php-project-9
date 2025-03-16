@@ -4,6 +4,7 @@ use DI\Container;
 use Slim\Views\Twig;
 use Slim\Flash\Messages;
 use Slim\Factory\AppFactory;
+use Slim\Views\TwigMiddleware;
 use Twig\Loader\FilesystemLoader;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UrlsController;
@@ -12,7 +13,6 @@ use Psr\Http\Message\ServerRequestInterface;
 require __DIR__ . '/../vendor/autoload.php';
 
 $container = new Container();
-
 AppFactory::setContainer($container);
 
 $app = AppFactory::create();
@@ -21,13 +21,19 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-$container->set('view', function () {
-    $loader = new FilesystemLoader(__DIR__ . '/../resources/views/');
+$container->set(Twig::class, function () {
+    $loader = new FilesystemLoader(__DIR__ . '/../resources/views');
     return new Twig($loader);
 });
 
+$app->add(TwigMiddleware::createFromContainer($app, Twig::class));
+
 $container->set('flash', function () {
     return new Messages();
+});
+
+$container->set('view', function ($container) {
+    return $container->get(Twig::class);
 });
 
 $container->get('view')->getEnvironment()->addGlobal('flash', $container->get('flash'));

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DI\Container;
+use App\Repository\DataBase;
 use Slim\Routing\RouteContext;
+use App\Repository\UrlRepository;
 use App\Services\CheckUrlServices;
 use App\Http\Validators\UrlValidator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,6 +13,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UrlsController extends Controller
 {
+    protected UrlRepository $urlRepository;
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+
+        $this->urlRepository = new UrlRepository(DataBase::get()->connect());
+    }
+
     public function index(Request $request, Response $response, array $args)
     {
         $url = $this->urlRepository->getAllWithLatestChecks();
@@ -28,19 +40,20 @@ class UrlsController extends Controller
             return $this->view->render($response->withStatus(422), 'urls/home.twig', ['errors' => $errors]);
         }
 
-        $data = $this->urlRepository->createOrGetId($urlName, date('Y-m-d H:i:s'));
 
+        $idUrl = $this->urlRepository->getIdByName($urlName);
 
-        if ($data['status']) {
+        if ($idUrl) {
             $this->flash->addMessage('success', 'Страница уже существует');
         } else {
             $this->flash->addMessage('success', 'Страница успешно добавлена');
+            $idUrl = $this->urlRepository->create($urlName, date('Y-m-d H:i:s'));
         }
 
 
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $data['id']]);
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $idUrl]);
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
@@ -65,13 +78,19 @@ class UrlsController extends Controller
 
         if (isset($url['name'])) {
             $check = $checkUrl->checkUrl($url['name'], $id);
-            $this->urlRepository->createUrlCheck($check);
         } else {
             $this->flash->addMessage('errors', 'Не верный id');
             return $this->view->render($response->withStatus(404), 'urls/home.twig');
         }
 
-        $this->flash->addMessage('success', 'Страница успешно проверена');
+        if ($check['status_code'] == 500) {
+            $this->flash->addMessage('errors', 'Произошла ошибка при проверке, не удалось подключиться');
+        } else {
+            $this->urlRepository->createUrlCheck($check);
+            $this->flash->addMessage('success', 'Страница успешно проверена');
+        }
+
+
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $id]);

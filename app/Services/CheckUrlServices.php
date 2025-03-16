@@ -53,10 +53,6 @@ class CheckUrlServices
             $data['status_code'] = 500;
         }
 
-        $data['title'] = $message;
-        $data['h1'] = $message;
-        $data['description'] = $message;
-
         return $data;
     }
 
