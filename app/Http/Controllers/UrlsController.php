@@ -50,8 +50,9 @@ class UrlsController extends Controller
             $id = $this->urlRepository->create($urlName, (string) date('Y-m-d H:i:s'));
         }
 
-        return $response->withHeader('Location', RouteContext::fromRequest($request)->getRouteParser()->urlFor('urls.show', ['id' => $id]))
-        ->withStatus(302);
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $id]);
+        return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 
     public function show(Request $request, Response $response, array $args)
@@ -87,7 +88,8 @@ class UrlsController extends Controller
             $this->flash->addMessage('success', 'Страница успешно проверена');
         }
 
-        return $response->withHeader('Location', RouteContext::fromRequest($request)->getRouteParser()->urlFor('urls.show', ['id' => $id]))
-        ->withStatus(302);
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        $redirectUrl = $routeParser->urlFor('urls.show', ['id' => $id]);
+        return $response->withHeader('Location', $redirectUrl)->withStatus(302);
     }
 }
