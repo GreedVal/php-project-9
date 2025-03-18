@@ -6,7 +6,7 @@ use DI\Container;
 use App\Repository\DataBase;
 use Slim\Routing\RouteContext;
 use App\Repository\UrlRepository;
-use App\Services\CheckUrlServices;
+use App\Services\CheckUrlService;
 use App\Http\Validators\UrlValidator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -70,7 +70,7 @@ class UrlsController extends Controller
     {
         $id = $args['id'];
 
-        $checkUrl = new CheckUrlServices();
+        $checkUrl = new CheckUrlService();
 
         $url = $this->urlRepository->getRowById($id);
 

@@ -3,16 +3,11 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Exception\RequestException;
 use DiDom\Document;
 use DiDom\Element;
 use Valitron\Validator;
-use Throwable;
 
-class CheckUrlServices
+class CheckUrlService
 {
     private Client $client;
 
@@ -28,12 +23,9 @@ class CheckUrlServices
             'created_at' => date('Y-m-d H:i:s')
         ];
 
-        try {
-            $res = $this->client->request('GET', $url, ['http_errors' => true]);
-            $data['status_code'] = $res->getStatusCode();
-        } catch (ClientException | ConnectException | TransferException $e) {
-            return $this->handleException($e, $data, 'Ошибка при проверке URL');
-        }
+
+        $res = $this->client->request('GET', $url, ['http_errors' => true]);
+        $data['status_code'] = $res->getStatusCode();
 
         $htmlFromUrl = (string) $res->getBody();
         $document = new Document($htmlFromUrl);
@@ -45,20 +37,11 @@ class CheckUrlServices
         return $data;
     }
 
-    private function handleException(Throwable $e, array &$data, string $message): array
-    {
-        if ($e instanceof RequestException && $e->getResponse()) {
-            $data['status_code'] = $e->getResponse()->getStatusCode();
-        } else {
-            $data['status_code'] = 500;
-        }
-        return $data;
-    }
 
     private function extractText(Document $document, string $selector): ?string
     {
         $element = $document->first($selector);
-        return $element instanceof Element ? $element->text() : null;
+        return $element ? $element->text() : null;
     }
 
     private function extractH1(Document $document): ?string
