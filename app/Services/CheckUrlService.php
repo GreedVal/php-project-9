@@ -40,14 +40,14 @@ class CheckUrlService
     private function extractText(Document $document, string $selector): ?string
     {
         $element = $document->first($selector);
-        return $element ? $element->text() : null;
+        return $element->text();
     }
 
     private function extractH1(Document $document): ?string
     {
         $h1Element = $document->first('h1');
 
-        return $h1Element ? mb_substr($h1Element->text(), 0, 255) : null;
+        return mb_substr($h1Element->text(), 0, 255);
     }
 
     private function extractAttribute(Document $document, string $selector, string $attribute): ?string
