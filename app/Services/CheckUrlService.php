@@ -46,7 +46,7 @@ class CheckUrlService
     private function extractH1(Document $document): ?string
     {
         $h1Element = $document->first('h1');
-    
+
         return $h1Element ? mb_substr($h1Element->text(), 0, 255) : null;
     }
 

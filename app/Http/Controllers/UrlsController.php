@@ -32,7 +32,7 @@ class UrlsController extends Controller
         foreach ($lastCheck as $check) {
             $lastCheckByUrlId[$check['url_id']] = $check;
         }
-    
+
         foreach ($urls as &$url) {
             if (isset($lastCheckByUrlId[$url['id']])) {
                 $url['status_code'] = $lastCheckByUrlId[$url['id']]['status_code'];
