@@ -64,19 +64,24 @@ class UrlRepository
         return $row ?: null;
     }
 
-    public function getAllWithLatestChecks(): array
+    public function getAllUrls(): array
     {
-        $stmt = $this->pdo->query(
-            'SELECT u.*, uc.created_at AS last_check_at, uc.status_code
-             FROM urls u
-             LEFT JOIN (
-                 SELECT url_id, MAX(created_at) AS created_at
-                 FROM url_checks
-                 GROUP BY url_id
-             ) latest_checks ON u.id = latest_checks.url_id
-             LEFT JOIN url_checks uc ON u.id = uc.url_id AND uc.created_at = latest_checks.created_at
-             ORDER BY u.id DESC'
-        );
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query('SELECT * FROM urls ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLatestChecks(): array
+    {
+        return $this->pdo->query(
+            'SELECT 
+                (SELECT status_code 
+                 FROM url_checks 
+                 WHERE url_id = uc.url_id 
+                 ORDER BY created_at DESC 
+                 LIMIT 1) AS status_code,
+                uc.url_id, 
+                MAX(uc.created_at) AS last_check_at
+             FROM url_checks uc
+             GROUP BY uc.url_id'
+        )->fetchAll(PDO::FETCH_ASSOC);
     }
 }

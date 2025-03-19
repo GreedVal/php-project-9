@@ -24,9 +24,26 @@ class UrlsController extends Controller
 
     public function index(Request $request, Response $response, array $args)
     {
-        $url = $this->urlRepository->getAllWithLatestChecks();
+        $urls = $this->urlRepository->getAllUrls();
 
-        return $this->view->render($response, 'urls/urls.twig', ['urls' => $url]);
+        $lastCheck = $this->urlRepository->getLatestChecks();
+
+        $lastCheckByUrlId = [];
+        foreach ($lastCheck as $check) {
+            $lastCheckByUrlId[$check['url_id']] = $check;
+        }
+    
+        foreach ($urls as &$url) {
+            if (isset($lastCheckByUrlId[$url['id']])) {
+                $url['status_code'] = $lastCheckByUrlId[$url['id']]['status_code'];
+                $url['last_check_at'] = $lastCheckByUrlId[$url['id']]['last_check_at'];
+            } else {
+                $url['status_code'] = null;
+                $url['last_check_at'] = null;
+            }
+        }
+
+        return $this->view->render($response, 'urls/urls.twig', ['urls' => $urls]);
     }
 
     public function store(Request $request, Response $response, array $args)

@@ -5,7 +5,6 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use DiDom\Document;
 use DiDom\Element;
-use Valitron\Validator;
 
 class CheckUrlService
 {
