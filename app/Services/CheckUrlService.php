@@ -27,6 +27,10 @@ class CheckUrlService
         $res = $this->client->request('GET', $url, ['http_errors' => true]);
         $data['status_code'] = $res->getStatusCode();
 
+        if ($data['status_code'] == 404) {
+            return $data;
+        }
+
         $htmlFromUrl = (string) $res->getBody();
         $document = new Document($htmlFromUrl);
 
