@@ -47,7 +47,7 @@ class CheckUrlService
     {
         $h1Element = $document->first('h1');
 
-        return mb_substr($h1Element->text(), 0, 255);
+        return $h1Element instanceof Element ? mb_substr($h1Element->text(), 0, 255) : '';
     }
 
     private function extractAttribute(Document $document, string $selector, string $attribute): ?string
