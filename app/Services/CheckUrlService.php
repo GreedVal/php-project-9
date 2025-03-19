@@ -2,17 +2,18 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
-use DiDom\Document;
+use DI\Container;
 use DiDom\Element;
+use DiDom\Document;
+use GuzzleHttp\Client;
 
 class CheckUrlService
 {
     private Client $client;
 
-    public function __construct()
+    public function __construct(Container $container)
     {
-        $this->client = new Client();
+        $this->client = $container->get('client');
     }
 
     public function checkUrl(string $url, int $id): array

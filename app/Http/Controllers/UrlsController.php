@@ -14,12 +14,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UrlsController extends Controller
 {
     protected UrlRepository $urlRepository;
+    protected CheckUrlService $checkUrl;
 
     public function __construct(Container $container)
     {
         parent::__construct($container);
 
         $this->urlRepository = new UrlRepository(DataBase::get()->connect());
+        $this->checkUrl = new CheckUrlService($container);
     }
 
     public function index(Request $request, Response $response, array $args)
@@ -87,12 +89,10 @@ class UrlsController extends Controller
     {
         $id = $args['id'];
 
-        $checkUrl = new CheckUrlService();
-
         $url = $this->urlRepository->getRowById($id);
 
         if (isset($url['name'])) {
-            $check = $checkUrl->checkUrl($url['name'], $id);
+            $check = $this->checkUrl->checkUrl($url['name'], $id);
         } else {
             $this->flash->addMessage('errors', 'Не верный id');
             return $this->view->render($response->withStatus(404), 'urls/home.twig');

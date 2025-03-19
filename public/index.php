@@ -2,6 +2,7 @@
 
 use DI\Container;
 use Slim\Views\Twig;
+use GuzzleHttp\Client;
 use Slim\Flash\Messages;
 use Slim\Factory\AppFactory;
 use Slim\Views\TwigMiddleware;
@@ -30,6 +31,10 @@ $app->add(TwigMiddleware::createFromContainer($app, Twig::class));
 
 $container->set('flash', function () {
     return new Messages();
+});
+
+$container->set('client', function () {
+    return new Client();
 });
 
 $container->set('view', function ($container) {
