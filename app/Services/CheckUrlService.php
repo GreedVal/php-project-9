@@ -37,13 +37,13 @@ class CheckUrlService
     }
 
 
-    private function extractText(Document $document, string $selector): ?string
+    private function extractText(Document $document, string $selector): string
     {
         $element = $document->first($selector);
-        return $element->text();
+        return $element instanceof Element ? $element->text() : '';
     }
 
-    private function extractH1(Document $document): ?string
+    private function extractH1(Document $document): string
     {
         $h1Element = $document->first('h1');
 
