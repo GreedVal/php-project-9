@@ -47,16 +47,8 @@ class CheckUrlService
     private function extractH1(Document $document): ?string
     {
         $h1Element = $document->first('h1');
-
-        if ($h1Element instanceof Element) {
-            $text = $h1Element->text();
-            $validator = new Validator(['h1' => $text]);
-            $validator->rule('lengthMax', 'h1', 255);
-
-            return $validator->validate() ? $text : mb_substr($text, 0, 255);
-        }
-
-        return null;
+    
+        return $h1Element ? mb_substr($h1Element->text(), 0, 255) : null;
     }
 
     private function extractAttribute(Document $document, string $selector, string $attribute): ?string
