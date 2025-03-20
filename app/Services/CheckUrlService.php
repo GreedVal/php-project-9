@@ -20,24 +20,33 @@ class CheckUrlService
     {
         $data = [
             'url_id' => $id,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s'),
+            'status_code' => null,
+            'error' => null
         ];
-
-
-        $res = $this->client->request('GET', $url, ['http_errors' => true]);
-        $data['status_code'] = $res->getStatusCode();
-
-        if ($data['status_code'] !== 200) {
-            return $data;
+    
+        try {
+            $res = $this->client->request('GET', $url, ['http_errors' => false]); 
+            $data['status_code'] = $res->getStatusCode();
+            
+            if ($data['status_code'] >= 400) {
+                $data['error'] = "HTTP error: " . $data['status_code'];
+                return $data;
+            }
+    
+            $htmlFromUrl = (string) $res->getBody();
+            $document = new Document($htmlFromUrl);
+    
+            $data['title'] = $this->extractText($document, 'title');
+            $data['h1'] = $this->extractH1($document);
+            $data['description'] = $this->extractAttribute($document, 'meta[name="description"]', 'content');
+    
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $data['error'] = 'RequestException: ' . $e->getMessage();
+        } catch (\Exception $e) {
+            $data['error'] = 'Exception: ' . $e->getMessage();
         }
-
-        $htmlFromUrl = (string) $res->getBody();
-        $document = new Document($htmlFromUrl);
-
-        $data['title'] = $this->extractText($document, 'title');
-        $data['h1'] = $this->extractH1($document);
-        $data['description'] = $this->extractAttribute($document, 'meta[name="description"]', 'content');
-
+    
         return $data;
     }
 
