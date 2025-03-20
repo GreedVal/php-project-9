@@ -24,29 +24,29 @@ class CheckUrlService
             'status_code' => null,
             'error' => null
         ];
-    
+
         try {
             $res = $this->client->request('GET', $url, ['http_errors' => false]); 
             $data['status_code'] = $res->getStatusCode();
-            
+
             if ($data['status_code'] >= 400) {
                 $data['error'] = "HTTP error: " . $data['status_code'];
                 return $data;
             }
-    
+
             $htmlFromUrl = (string) $res->getBody();
             $document = new Document($htmlFromUrl);
-    
+
             $data['title'] = $this->extractText($document, 'title');
             $data['h1'] = $this->extractH1($document);
             $data['description'] = $this->extractAttribute($document, 'meta[name="description"]', 'content');
-    
+
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             $data['error'] = 'RequestException: ' . $e->getMessage();
         } catch (\Exception $e) {
             $data['error'] = 'Exception: ' . $e->getMessage();
         }
-    
+
         return $data;
     }
 
