@@ -26,7 +26,7 @@ class CheckUrlService
         ];
 
         try {
-            $res = $this->client->request('GET', $url, ['http_errors' => false]); 
+            $res = $this->client->request('GET', $url, ['http_errors' => false]);
             $data['status_code'] = $res->getStatusCode();
 
             if ($data['status_code'] >= 400) {
@@ -40,7 +40,6 @@ class CheckUrlService
             $data['title'] = $this->extractText($document, 'title');
             $data['h1'] = $this->extractH1($document);
             $data['description'] = $this->extractAttribute($document, 'meta[name="description"]', 'content');
-
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             $data['error'] = 'RequestException: ' . $e->getMessage();
         } catch (\Exception $e) {
